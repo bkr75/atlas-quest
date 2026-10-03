@@ -1,0 +1,171 @@
+{
+  "app": {
+    "name": "Atlas Quest",
+    "tagline": "Learn where every country and capital is — the fun way",
+    "documentTitle": "Atlas Quest — Interactive Geography Game",
+    "skipToContent": "Skip to content"
+  },
+  "header": {
+    "switchLanguage": "العربية",
+    "switchLanguageLabel": "Switch to Arabic",
+    "themeDark": "Switch to dark mode",
+    "themeLight": "Switch to light mode",
+    "soundOn": "Turn sound on",
+    "soundOff": "Mute sound",
+    "numerals": "Number style",
+    "numeralsArab": "Eastern Arabic digits (١٢٣)",
+    "numeralsLatn": "Western digits (123)"
+  },
+  "home": {
+    "chooseMode": "Choose a game mode",
+    "chooseRegion": "Choose a region",
+    "difficulty": "Difficulty",
+    "questions": "Questions",
+    "all": "All",
+    "start": "Start playing",
+    "best": "Best score: {score}",
+    "noBest": "No score yet for this setup",
+    "capDirection": "Question direction",
+    "capInput": "Answer style",
+    "countries": {
+      "zero": "No countries",
+      "one": "1 country",
+      "two": "{count} countries",
+      "few": "{count} countries",
+      "many": "{count} countries",
+      "other": "{count} countries"
+    }
+  },
+  "mode": {
+    "find": {
+      "title": "Find the country",
+      "desc": "A country is named — click it on the map"
+    },
+    "type": {
+      "title": "Type the name",
+      "desc": "A country is highlighted — type its name"
+    },
+    "choice": {
+      "title": "Multiple choice",
+      "desc": "A country is highlighted — pick its name from four"
+    },
+    "capitals": {
+      "title": "Capitals",
+      "desc": "Name each country's capital, or the country of a capital"
+    }
+  },
+  "capDirection": {
+    "toCapital": "Country → capital",
+    "toCountry": "Capital → country"
+  },
+  "capInput": {
+    "choice": "Multiple choice",
+    "type": "Typing"
+  },
+  "region": {
+    "world": "World",
+    "arab": "Arab World",
+    "gulf": "Gulf States",
+    "africa": "Africa",
+    "asia": "Asia",
+    "europe": "Europe",
+    "namerica": "North America",
+    "samerica": "South America",
+    "oceania": "Oceania"
+  },
+  "difficulty": {
+    "easy": {
+      "title": "Easy",
+      "desc": "{attempts} attempts, unlimited hints, no time limit"
+    },
+    "medium": {
+      "title": "Medium",
+      "desc": "2 attempts and {hints} hints per round"
+    },
+    "hard": {
+      "title": "Hard",
+      "desc": "1 attempt, no hints, {seconds} seconds per question"
+    }
+  },
+  "game": {
+    "prompt": {
+      "find": "Where is {name}?",
+      "type": "Which country is highlighted?",
+      "choice": "Which country is highlighted?",
+      "toCapital": "What is the capital of {name}?",
+      "toCountry": "{name} is the capital of which country?"
+    },
+    "promptLabel": {
+      "find": "Click the country on the map",
+      "type": "Type the country name",
+      "choice": "Pick the right answer",
+      "capital": "Type or pick the capital",
+      "country": "Type or pick the country"
+    },
+    "question": "Question {current} of {total}",
+    "score": "Score",
+    "streak": "Streak",
+    "time": "Time",
+    "timeLeft": "Time left",
+    "hint": "Hint",
+    "hintsLeft": "Hint ({count})",
+    "skip": "Skip",
+    "quit": "Main menu",
+    "submit": "Check",
+    "inputPlaceholder": "Type your answer…",
+    "inputLabelCountry": "Country name",
+    "inputLabelCapital": "Capital name",
+    "correct": "Correct!",
+    "wrong": "Wrong answer",
+    "thatIs": "That's {name}",
+    "answerWas": "The answer was {name}",
+    "timeUp": "Time's up!",
+    "tryAgain": "Try again",
+    "attemptsLeft": {
+      "zero": "No attempts left",
+      "one": "1 attempt left",
+      "two": "{count} attempts left",
+      "few": "{count} attempts left",
+      "many": "{count} attempts left",
+      "other": "{count} attempts left"
+    },
+    "points": "+{points}",
+    "hintLetters": "Starts with “{prefix}…”",
+    "hintArea": "The country is inside the dashed circle",
+    "hintFifty": "Two wrong options removed",
+    "streakToast": {
+      "zero": "",
+      "one": "",
+      "two": "On fire! {count} in a row",
+      "few": "On fire! {count} in a row",
+      "many": "On fire! {count} in a row",
+      "other": "On fire! {count} in a row"
+    },
+    "mapLabel": "Interactive map",
+    "mapCountry": "Country on the map",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Reset view"
+  },
+  "results": {
+    "title": "Round complete!",
+    "newRecord": "New high score!",
+    "score": "Score",
+    "accuracy": "Accuracy",
+    "time": "Time",
+    "bestStreak": "Best streak",
+    "previousBest": "Previous best: {score}",
+    "mistakes": "Your mistakes this round",
+    "noMistakes": "Flawless! No mistakes at all.",
+    "missed": "Missed",
+    "lateCorrect": "Correct after more than one try",
+    "retryMistakes": "Retry mistakes only",
+    "playAgain": "Play again",
+    "menu": "Main menu",
+    "perfect": "Perfect run! 🏆",
+    "great": "Great job! 🌟",
+    "good": "Nice work! 👍",
+    "keepGoing": "Keep practising! 💪",
+    "close": "Close"
+  }
+}
