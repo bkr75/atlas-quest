@@ -1,4 +1,4 @@
-import { COUNTRIES, type Country, type RegionId } from './countries';
+import { COUNTRIES, type Country, type RegionId, type Tier } from './countries';
 
 export interface RegionDef {
   id: RegionId;
@@ -26,7 +26,7 @@ export function getRegion(id: RegionId): RegionDef {
   return REGIONS.find((r) => r.id === id) ?? REGIONS[0];
 }
 
-export function countriesInRegion(region: RegionId): Country[] {
-  if (region === 'world') return COUNTRIES;
-  return COUNTRIES.filter((c) => c.regions.includes(region));
+/** Countries of a region; with a level, only countries whose tier is ≤ level (level 3 = all). */
+export function countriesInRegion(region: RegionId, level: Tier = 3): Country[] {
+  return COUNTRIES.filter((c) => (region === 'world' || c.regions.includes(region)) && c.tier <= level);
 }

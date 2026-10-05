@@ -13,7 +13,7 @@ function seeded(seed: number) {
   };
 }
 
-const base: GameConfig = { mode: 'find', region: 'world', difficulty: 'easy', count: 10, capDirection: 'toCapital', capInput: 'choice' };
+const base: GameConfig = { mode: 'find', region: 'world', difficulty: 'easy', level: 3, count: 10, capDirection: 'toCapital', capInput: 'choice' };
 const wrongId = (g: Game) => (g.current.id === 'FR' ? 'DE' : 'FR');
 
 describe('Game setup', () => {
@@ -198,16 +198,41 @@ describe('hints', () => {
   });
 });
 
+describe('levels', () => {
+  it('level 1 only asks famous countries, level 2 adds medium ones, level 3 asks everything', () => {
+    const l1 = new Game({ ...base, level: 1, count: 0 }, seeded(20));
+    const l2 = new Game({ ...base, level: 2, count: 0 }, seeded(20));
+    const l3 = new Game({ ...base, level: 3, count: 0 }, seeded(20));
+    expect(l1.questions.every((q) => getCountry(q.id).tier === 1)).toBe(true);
+    expect(l2.questions.every((q) => getCountry(q.id).tier <= 2)).toBe(true);
+    expect(l2.questions.some((q) => getCountry(q.id).tier === 2)).toBe(true);
+    expect(l3.total).toBe(196);
+    expect(l1.total).toBeLessThan(l2.total);
+    expect(l2.total).toBeLessThan(l3.total);
+  });
+
+  it('picks multiple-choice distractors from the same level', () => {
+    const g = new Game({ ...base, mode: 'choice', level: 1, count: 0 }, seeded(21));
+    for (const q of g.questions) for (const id of q.options) expect(getCountry(id).tier).toBe(1);
+  });
+
+  it('keeps level 1 famous classics and leaves microstates for level 3', () => {
+    for (const id of ['SA', 'EG', 'US', 'FR', 'CN', 'BR', 'AU']) expect(getCountry(id).tier).toBe(1);
+    for (const id of ['VA', 'MC', 'NR', 'TL', 'KN']) expect(getCountry(id).tier).toBe(3);
+  });
+});
+
 describe('recordKey', () => {
   it('distinguishes every setting that changes the game', () => {
     const keys = new Set([
       recordKey(base),
       recordKey({ ...base, region: 'asia' }),
       recordKey({ ...base, difficulty: 'hard' }),
+      recordKey({ ...base, level: 1 }),
       recordKey({ ...base, count: 0 }),
       recordKey({ ...base, mode: 'capitals' }),
       recordKey({ ...base, mode: 'capitals', capDirection: 'toCountry' }),
     ]);
-    expect(keys.size).toBe(6);
+    expect(keys.size).toBe(7);
   });
 });

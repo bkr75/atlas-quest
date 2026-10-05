@@ -73,6 +73,18 @@ describe('country data completeness', () => {
     for (const r of REGIONS) expect(countriesInRegion(r.id).length).toBeGreaterThan(0);
   });
 
+  it('has enough countries at every level of every region for a 4-option question', () => {
+    for (const r of REGIONS) {
+      const sizes = ([1, 2, 3] as const).map((level) => countriesInRegion(r.id, level).length);
+      expect(sizes[0], `${r.id} level 1`).toBeGreaterThanOrEqual(4);
+      expect(sizes[0]).toBeLessThanOrEqual(sizes[1]);
+      expect(sizes[1]).toBeLessThanOrEqual(sizes[2]);
+      expect(sizes[2]).toBe(countriesInRegion(r.id).length);
+    }
+    // Disputed capitals are excluded from capitals mode: still at least 4 left at level 1.
+    for (const r of REGIONS) expect(countriesInRegion(r.id, 1).filter((c) => !c.capitalDisputed).length).toBeGreaterThanOrEqual(4);
+  });
+
   it('uses the agreed Arabic names for well-known countries', () => {
     const ar = Object.fromEntries(COUNTRIES.map((c) => [c.id, c.ar]));
     expect(ar.SA).toBe('المملكة العربية السعودية');

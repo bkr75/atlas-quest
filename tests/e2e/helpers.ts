@@ -52,6 +52,8 @@ export interface Setup {
   mode: 'find' | 'type' | 'choice' | 'capitals';
   region: string;
   difficulty?: 'easy' | 'medium' | 'hard';
+  /** 1 = famous only, 2 = + medium, 3 = all (default 3). */
+  level?: 1 | 2 | 3;
   count?: '10' | '20' | 'all';
   capDirection?: 'toCapital' | 'toCountry';
   capInput?: 'choice' | 'type';
@@ -65,6 +67,7 @@ export async function setupAndStart(page: Page, lang: Lang, s: Setup): Promise<v
     await pick(page, 'capInput', s.capInput ?? 'choice');
   }
   await choose(page, (d.region as Record<string, string>)[s.region]);
+  await pick(page, 'level', String(s.level ?? 3));
   await pick(page, 'difficulty', s.difficulty ?? 'easy');
   const countValue = s.count === 'all' ? '0' : s.count ?? '10';
   await pick(page, 'count', countValue);

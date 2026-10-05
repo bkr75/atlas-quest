@@ -22,8 +22,12 @@ export type RegionId =
   | 'samerica'
   | 'oceania';
 
+/** How well known a country is: 1 = famous, 2 = medium, 3 = obscure (small islands, microstates…). */
+export type Tier = 1 | 2 | 3;
+
 export interface Country {
   id: string;
+  tier: Tier;
   num: string;
   regions: RegionId[];
   en: string;
@@ -45,6 +49,39 @@ type Alts = {
   capitalDisputed?: boolean;
 };
 
+// Tier 1: countries most players already know (chosen for an Arabic-speaking audience,
+// so every Arab League member except the three least-known is here).
+const TIER_1 = new Set([
+  // Arab world
+  'SA', 'AE', 'KW', 'QA', 'BH', 'OM', 'YE', 'IQ', 'SY', 'JO', 'LB', 'PS', 'EG', 'SD', 'LY', 'TN', 'DZ', 'MA', 'SO',
+  // Africa
+  'ZA', 'NG', 'KE', 'ET', 'SN', 'GH', 'CM', 'CD', 'MG',
+  // Asia
+  'CN', 'JP', 'IN', 'TR', 'IR', 'PK', 'AF', 'ID', 'MY', 'TH', 'KR', 'KP', 'PH', 'VN', 'SG', 'RU',
+  // Europe
+  'GB', 'FR', 'DE', 'IT', 'ES', 'PT', 'GR', 'NL', 'SE', 'NO', 'CH', 'BE', 'PL', 'UA', 'IE', 'AT', 'DK', 'FI',
+  // Americas
+  'US', 'CA', 'MX', 'CU', 'JM', 'PA', 'BR', 'AR', 'CL', 'CO', 'PE', 'VE',
+  // Oceania
+  'AU', 'NZ', 'PG', 'FJ',
+]);
+
+// Tier 3: microstates, small island nations and other rarely-asked countries.
+const TIER_3 = new Set([
+  // Africa
+  'BI', 'CV', 'CF', 'GQ', 'ER', 'SZ', 'GW', 'LS', 'ST', 'SC', 'MU', 'KM', 'TG', 'BJ', 'GM', 'LR', 'SL',
+  // Asia
+  'BT', 'BN', 'TL', 'MV', 'KG', 'TJ', 'TM', 'LA',
+  // Europe
+  'AD', 'LI', 'MC', 'SM', 'VA', 'XK', 'MD', 'ME', 'MK',
+  // North America
+  'AG', 'BB', 'DM', 'GD', 'KN', 'LC', 'VC', 'BZ',
+  // South America
+  'GY', 'SR',
+  // Oceania
+  'KI', 'MH', 'FM', 'NR', 'PW',
+]);
+
 function c(
   id: string,
   num: string,
@@ -57,6 +94,7 @@ function c(
 ): Country {
   return {
     id,
+    tier: TIER_1.has(id) ? 1 : TIER_3.has(id) ? 3 : 2,
     num,
     regions,
     en,

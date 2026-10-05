@@ -11,6 +11,10 @@ no CDN, and it works offline once served.
 - **4 game modes:** find the country on the map · type the highlighted country · multiple choice ·
   capitals (country → capital or capital → country, answered by choice or by typing).
 - **9 regions:** World, Arab World, Gulf States, Africa, Asia, Europe, North America, South America, Oceania.
+- **3 levels** (which countries are asked): level 1 only famous countries, level 2 adds less-known
+  ones, level 3 asks every country including microstates and small islands. Each country's level
+  (`tier`) is set by the `TIER_1` / `TIER_3` lists in `src/data/countries.ts`; everything else is tier 2.
+  Countries outside the chosen level are greyed out on the map, and best scores are kept per level.
 - **3 difficulties:**
 
   | | Attempts | Hints | Timer |

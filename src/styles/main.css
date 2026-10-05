@@ -551,6 +551,64 @@ bdi {
   font-weight: 500;
 }
 
+.level-group .options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.level-card .option-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: 'badge text' 'badge count';
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 2px;
+  block-size: 100%;
+}
+
+.level-badge {
+  grid-area: badge;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 1.15rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.level-card input:checked + .option-body .level-badge {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.level-text {
+  grid-area: text;
+  display: grid;
+  min-inline-size: 0;
+}
+
+.level-title {
+  font-weight: 800;
+}
+
+.level-desc {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.level-count {
+  grid-area: count;
+  color: var(--accent-strong);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 .segmented .options {
   gap: 6px;
   padding: 5px;
@@ -1486,6 +1544,10 @@ bdi {
 
   .mode-group .options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .level-group .options {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .answer-form {

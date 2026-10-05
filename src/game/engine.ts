@@ -1,4 +1,4 @@
-import { getCountry, type Country, type RegionId } from '../data/countries';
+import { getCountry, type Country, type RegionId, type Tier } from '../data/countries';
 import { countriesInRegion } from '../data/regions';
 import { capitalNames, countryNames, matchesAny } from '../lib/match';
 import { DIFFICULTY, Streak, accuracy, pointsFor, type Difficulty, type DifficultyRules } from '../lib/scoring';
@@ -11,6 +11,8 @@ export interface GameConfig {
   mode: Mode;
   region: RegionId;
   difficulty: Difficulty;
+  /** 1 = famous countries only, 2 = adds medium-known ones, 3 = every country. */
+  level: Tier;
   /** Number of questions, 0 = every country of the region. */
   count: number;
   capDirection: CapDirection;
@@ -61,8 +63,8 @@ export function shuffle<T>(items: readonly T[], rng: Rng): T[] {
 }
 
 /** Countries that can be asked for a given config (capitals mode skips disputed capitals). */
-export function questionPool(config: Pick<GameConfig, 'mode' | 'region'>): Country[] {
-  const list = countriesInRegion(config.region);
+export function questionPool(config: Pick<GameConfig, 'mode' | 'region'> & { level?: Tier }): Country[] {
+  const list = countriesInRegion(config.region, config.level ?? 3);
   return config.mode === 'capitals' ? list.filter((c) => !c.capitalDisputed) : list;
 }
 
@@ -283,5 +285,5 @@ export class Game {
 /** Key under which best scores are stored. */
 export function recordKey(config: GameConfig): string {
   const mode = config.mode === 'capitals' ? `capitals-${config.capDirection}` : config.mode;
-  return `${mode}|${config.region}|${config.difficulty}|${config.count}`;
+  return `${mode}|${config.region}|L${config.level}|${config.difficulty}|${config.count}`;
 }

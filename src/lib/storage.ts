@@ -25,6 +25,7 @@ export const DEFAULT_CONFIG: GameConfig = {
   mode: 'find',
   region: 'world',
   difficulty: 'easy',
+  level: 1,
   count: 10,
   capDirection: 'toCapital',
   capInput: 'choice',
@@ -54,8 +55,12 @@ export function loadSettings(defaults: Omit<Settings, 'config'>): Settings {
     theme: saved.theme === 'dark' || saved.theme === 'light' ? saved.theme : defaults.theme,
     numerals: saved.numerals === 'latn' || saved.numerals === 'arab' ? saved.numerals : defaults.numerals,
     muted: typeof saved.muted === 'boolean' ? saved.muted : defaults.muted,
-    config: { ...DEFAULT_CONFIG, ...(saved.config ?? {}) },
+    config: sanitizeConfig({ ...DEFAULT_CONFIG, ...(saved.config ?? {}) }),
   };
+}
+
+function sanitizeConfig(config: GameConfig): GameConfig {
+  return { ...config, level: config.level === 1 || config.level === 2 || config.level === 3 ? config.level : DEFAULT_CONFIG.level };
 }
 
 export function saveSettings(settings: Settings): void {

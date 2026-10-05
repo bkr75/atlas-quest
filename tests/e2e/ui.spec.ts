@@ -1,4 +1,10 @@
+import { countriesInRegion } from '../../src/data/regions';
+import { COUNTRIES } from '../../src/data/countries';
 import { DICT, currentCountry, expect, openApp, setupAndStart, test, waitNext, type Setup } from './helpers';
+
+// The home screen starts on level 1, so region chips show the level-1 counts.
+const WORLD_L1 = countriesInRegion('world', 1).length;
+const arDigits = (n: number) => new Intl.NumberFormat('ar-u-nu-arab').format(n);
 
 test('language switch flips direction and every text instantly, without reloading', async ({ page }) => {
   await openApp(page, 'ar');
@@ -16,7 +22,7 @@ test('language switch flips direction and every text instantly, without reloadin
   await expect(html).toHaveAttribute('lang', 'en');
   await expect(page.locator('.hero h1')).toHaveText(DICT.en.app.name);
   await expect(page.locator('.btn-start')).toContainText(DICT.en.home.start);
-  await expect(page.locator('.region-chip').first()).toContainText('196 countries');
+  await expect(page.locator('.region-chip').first()).toContainText(`${WORLD_L1} countries`);
   expect(await page.evaluate(() => (window as unknown as { __marker: number }).__marker)).toBe(42);
   const brandLtr = await page.locator('.brand').boundingBox();
   expect(brandLtr!.x).toBeLessThan(100);
@@ -26,7 +32,7 @@ test('language switch flips direction and every text instantly, without reloadin
 
   await page.getByRole('button', { name: DICT.en.header.switchLanguageLabel }).click();
   await expect(html).toHaveAttribute('dir', 'rtl');
-  await expect(page.locator('.region-chip').first()).toContainText('١٩٦ دولة');
+  await expect(page.locator('.region-chip').first()).toContainText(`${arDigits(WORLD_L1)} دولة`);
 });
 
 test('language switch during a game keeps the game and translates names', async ({ page }) => {
@@ -51,12 +57,12 @@ test('language switch during a game keeps the game and translates names', async 
 
 test('numerals toggle switches between Arabic-Indic and Western digits', async ({ page }) => {
   await openApp(page, 'ar');
-  await expect(page.locator('.region-chip').first()).toContainText('١٩٦');
+  await expect(page.locator('.region-chip').first()).toContainText(arDigits(WORLD_L1));
   await page.locator('.numerals-toggle').click();
-  await expect(page.locator('.region-chip').first()).toContainText('196 دولة');
+  await expect(page.locator('.region-chip').first()).toContainText(`${WORLD_L1} دولة`);
   await expect(page.locator('.numerals-toggle')).toHaveText('123');
   await page.reload();
-  await expect(page.locator('.region-chip').first()).toContainText('196 دولة');
+  await expect(page.locator('.region-chip').first()).toContainText(`${WORLD_L1} دولة`);
   // Not shown in English.
   await page.locator('.lang-toggle').click();
   await expect(page.locator('.numerals-toggle')).toHaveCount(0);
@@ -157,4 +163,36 @@ test('accessibility basics: labelled controls, live regions and ✓/✗ marks th
   await page.locator(`.choice[data-id="${c.id}"]`).click();
   await expect(page.locator('.choice.is-correct .choice-mark')).toHaveText('✓');
   await expect(page.locator('.marker-ok text')).toHaveText('✓');
+});
+
+test('levels: counts update per level, and level 1 only asks famous countries', async ({ page }) => {
+  await openApp(page, 'ar');
+  const world = page.locator('.region-chip').first();
+  for (const level of [1, 2, 3] as const) {
+    await page.locator('label.option', { has: page.locator(`input[name="level"][value="${level}"]`) }).click();
+    await expect(world).toContainText(arDigits(countriesInRegion('world', level).length));
+  }
+  // Each level card shows how many countries it holds in the selected region.
+  await page.locator('label.option', { has: page.locator('input[name="region"][value="africa"]') }).click();
+  for (const level of [1, 2, 3] as const) {
+    await expect(page.locator(`.level-count[data-level="${level}"]`)).toHaveText(`${arDigits(countriesInRegion('africa', level).length)} دولة`);
+  }
+
+  const s: Setup = { mode: 'choice', region: 'world', level: 1 };
+  await setupAndStart(page, 'ar', s);
+  // Countries outside level 1 are greyed out on the map.
+  const playable = await page.locator('path.country.playable').evaluateAll((els) => els.map((e) => e.getAttribute('data-id')));
+  expect(playable.sort()).toEqual(countriesInRegion('world', 1).map((c) => c.id).sort());
+  for (let i = 0; i < 4; i++) {
+    const c = await currentCountry(page, 'ar', s);
+    expect(c.tier).toBe(1);
+    const options = await page.locator('.choice').evaluateAll((els) => els.map((e) => e.getAttribute('data-id')));
+    for (const id of options) expect(COUNTRIES.find((x) => x.id === id)?.tier).toBe(1);
+    await page.locator(`.choice[data-id="${c.id}"]`).click();
+    await waitNext(page, i);
+  }
+  // The chosen level is remembered.
+  await page.locator('.btn-quit').click();
+  await page.reload();
+  await expect(page.locator('input[name="level"][value="1"]')).toBeChecked();
 });

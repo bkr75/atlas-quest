@@ -1,4 +1,4 @@
-import { getCountry, type RegionId } from './data/countries';
+import { getCountry, type RegionId, type Tier } from './data/countries';
 import { REGIONS, getRegion } from './data/regions';
 import { Game, hintPrefix, questionPool, recordKey, type AnswerOutcome, type GameConfig, type Hint, type Mode } from './game/engine';
 import { capitalName, collator, countryName, dir, fmt, fmtClock, fmtPercent, getLang, setLocale, t, tNode, type Lang } from './i18n';
@@ -17,6 +17,7 @@ const MODES: { id: Mode; icon: string }[] = [
   { id: 'capitals', icon: icons.city },
 ];
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
+const LEVELS: Tier[] = [1, 2, 3];
 const COUNTS = [10, 20, 0];
 
 const DELAY_CORRECT = 900;
@@ -225,6 +226,23 @@ export class App {
       (region) => update({ region }),
     );
 
+    const levelGroup = radioGroup<Tier>(
+      'level',
+      t('home.level'),
+      LEVELS.map((l) => ({
+        value: l,
+        extraClass: 'level-card',
+        content: [
+          h('span', { class: 'level-badge', 'aria-hidden': 'true' }, fmt(l)),
+          h('span', { class: 'level-text' }, h('span', { class: 'level-title' }, t(`level.${l}.title`)), h('span', { class: 'level-desc' }, t(`level.${l}.desc`))),
+          h('span', { class: 'level-count', 'data-level': String(l) }, ''),
+        ],
+      })),
+      cfg.level,
+      'level-group',
+      (level) => update({ level }),
+    );
+
     const diffGroup = radioGroup<Difficulty>(
       'difficulty',
       t('home.difficulty'),
@@ -256,6 +274,7 @@ export class App {
       },
       h('div', { class: 'panel' }, modeGroup, capOptions),
       h('div', { class: 'panel' }, regionGroup),
+      h('div', { class: 'panel' }, levelGroup),
       h('div', { class: 'panel panel-row' }, diffGroup, countGroup),
       h(
         'div',
@@ -284,7 +303,11 @@ export class App {
     if (capOptions) capOptions.hidden = cfg.mode !== 'capitals';
     for (const span of this.main.querySelectorAll<HTMLElement>('.region-count')) {
       const region = span.dataset.region as RegionId;
-      span.textContent = t('home.countries', { count: questionPool({ mode: cfg.mode, region }).length });
+      span.textContent = t('home.countries', { count: questionPool({ mode: cfg.mode, region, level: cfg.level }).length });
+    }
+    for (const span of this.main.querySelectorAll<HTMLElement>('.level-count')) {
+      const level = Number(span.dataset.level) as Tier;
+      span.textContent = t('home.countries', { count: questionPool({ mode: cfg.mode, region: cfg.region, level }).length });
     }
     const rules = DIFFICULTY[cfg.difficulty];
     const desc = this.main.querySelector('#difficulty-desc');
