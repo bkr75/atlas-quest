@@ -55,6 +55,14 @@ npm run preview      # serve dist/ on http://localhost:4173
 It uses relative paths (`base: './'`), so it also works from a sub-folder. Browsers block ES modules
 on `file://`, so serve it rather than double-clicking `index.html`.
 
+## Play online (GitHub Pages)
+
+`.github/workflows/deploy.yml` runs the unit tests, builds the game and publishes `dist/` to
+GitHub Pages on every push to `main`. The game is at **https://bkr75.github.io/atlas-quest/**.
+
+One-time setup: under **Settings → Pages → Build and deployment → Source**, choose **GitHub Actions**.
+On a free GitHub plan, Pages also needs the repository to be public.
+
 ## Tests
 
 ```bash
